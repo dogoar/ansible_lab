@@ -7,13 +7,45 @@
   - name: Actualizar el repository index
     apt:
       update_cache: yes
+    when: ansible_distribution == "Debian"
 
   - name: Instalando Apache2
     apt:
       name: apache2
       state: latest
+    when: ansible_distribution == "Debian"
 
   - name: Agregar soporte PHP para Apache
     apt:
       name: libapache2-mod-php
       state: latest
+    when: ansible_distribution == "Debian"
+
+  - name: Instalar midnight commander
+    apt:
+      name: mc
+      state: latest
+    when: ansible_distribution == "Debian"
+
+  - name: Actualizar el repository index en Fedora
+    dnf:
+      update_cache: yes
+    when: ansible_distribution == "Fedora"
+
+  - name: Instalando httpd para Fedora
+    dnf:
+      name: httpd
+      state: latest
+    when: ansible_distribution == "Fedora"
+
+  - name: Agregar soporte PHP para httpd Fedora
+    dnf:
+      name: php
+      state: latest
+    when: ansible_distribution == "Fedora"
+
+  - name: Instalar midnight commander
+    dnf:
+      name: mc
+      state: latest
+    when: ansible_distribution == "Fedora"
