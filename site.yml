@@ -4,12 +4,14 @@
   become: true
   pre_tasks:
   - name: Instalar actualizaciones (Fedora)
+    tags: always
     dnf:
       update_only: yes
       update_cache: yes
     when: ansible_distribution == "Fedora"
 
   - name: Instalar actualizaciones (Debian)
+    tags: always
     apt:
       upgrade: dist
       update_cache: yes
@@ -19,20 +21,13 @@
   become: true
   tasks:
   - name: Instalar Apache y PHP para servers Debian
+    tags: apache,apache2,debian
     apt:
       name:
         - apache2
         - libapache2-mod-php
       state: latest
     when: ansible_distribution == "Debian"
-
-  - name: Instalar Apache y PHP para Fedora
-    dnf:
-      name:
-        - httpd
-        - php
-      state: latest
-    when: ansible_distribution == "Fedora"
 
   - name: copying files for site
     tags: apache,apache2,httpd
@@ -43,17 +38,28 @@
       group: root
       mode: 0644
 
+  - name: Instalar Apache y PHP para Fedora
+    tags: apache,centos,httpd
+    dnf:
+      name:
+        - httpd
+        - php
+      state: latest
+    when: ansible_distribution == "Fedora"
+
 - hosts: db_server
   become: true
   tasks:
 
   - name: Instalar mardiadb (Fedora)
+    tags: fedora,db,mariadb
     dnf:
       name: mariadb
       state: latest
     when: ansible_distribution == "Fedora"
 
   - name: Instalar mardiadb (Debian)
+    tags: db,mariadb,debian
     apt:
       name: mariadb-server
       state: latest
@@ -64,6 +70,16 @@
   tasks:
 
   - name: Instalar SAMBA
+    tags: samba
     package:
       name: samba
+      state: latest
+
+- hosts: all
+  become: true
+  tasks:
+  - name: Instalar Midnight Commander
+    tags: mc
+    package:
+      name: mc
       state: latest
